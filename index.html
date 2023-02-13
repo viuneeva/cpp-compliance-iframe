@@ -54,7 +54,7 @@
     <script>
         async function log() {
             const logRecord = new Parse.Object("logs");
-            logRecord.set("type", "App");
+            logRecord.set("type", "iframe");
             logRecord.set("source", "App");
             try {
                 let result = await logRecord.save()

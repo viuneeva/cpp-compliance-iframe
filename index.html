@@ -9,40 +9,48 @@
   </script>
 </head>
 <style>
-    #gocardless-legal-notice {
-        max-width: 564px;
-    }
-
-    #gocardless-powered-by {
-        display: flex;
-        align-items: center;
-    }
-
-    #gocardless-legal-notice + #gocardless-powered-by {
-        margin-top: 16px;
-    }
-
-    #gocardless-legal-notice p,
-    #gocardless-powered-by span {
+    body {
         font-family: Arial, Helvetica, sans-serif;
         font-size: 14px;
         font-weight: 400px;
         line-height: 22px;
         color: #000;
     }
-    #gocardless-powered-by svg{
+
+    .logo {
+        display: flex;
+        align-items: center;
+    }
+
+    .legal_notice {
+        display: block;
+        max-width: 564px;
+    }
+
+    .legal_notice + .logo {
+        margin-top: 16px;
+    }
+    .logo svg{
         margin-left: 4px;
+    }
+
+    .mode--light {
+        color: lightgray;
+    }
+
+    .invisible {
+        display: none;
     }
 </style>
 <body>
-    <div id="gocardless-legal-notice">
+    <div id="legal_notice" class="invisible legal_notice">
         <p>
             By continuing, you agree to our partner, GoCardless, to trigger recurring payments from 
             your bank account based on the payment parameters you have agreed with us. You also 
             agree to GoCardless’ Payer Terms of Use and Privacy Notice.
         </p>
     </div>
-    <div id="gocardless-powered-by">
+    <div id="logo" class="invisible logo">
         <span>
             Powered by 
         </span>
@@ -52,6 +60,27 @@
     </div>
 
     <script>
+        const urlParams = new URLSearchParams(window.location.search);
+
+        // vary with elements set
+        const complianceElements = [
+            document.querySelector("#legal_notice"),
+            document.querySelector("#logo"),
+        ];
+
+        // vary visibility of elements
+        const mode = urlParams.get('mode');
+        const bodyEl = document.querySelector("body");
+        bodyEl.classList = mode === "dark" ? ["mode--light"] : [];
+        let visibleElements = urlParams.get('display');
+        visibleElements = visibleElements ? visibleElements.split(",") : [];
+        complianceElements.forEach((el) => {
+            if(visibleElements.includes(el.id) || !visibleElements.length){
+                el.className = el.className.replace("invisible ", "")
+            }
+        });
+
+
         async function log() {
             const logRecord = new Parse.Object("logs");
             logRecord.set("type", "iframe");
